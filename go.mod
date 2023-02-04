@@ -6,8 +6,8 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/stretchr/testify v1.8.1
 	github.com/tysonmote/gommap v0.0.2
-	google.golang.org/genproto v0.0.0-20221118155620-16455021b5e6
-	google.golang.org/grpc v1.52.3
+	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013
+	google.golang.org/grpc v1.52.0-dev
 	google.golang.org/protobuf v1.28.1
 )
 
