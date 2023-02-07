@@ -17,14 +17,14 @@ type Authorizer interface {
 }
 
 type Config struct {
-	CommitLog CommitLog
+	CommitLog  CommitLog
 	Authorizer Authorizer
 }
 
 const (
 	objectWildcard = "*"
-	produceAction = "produce"
-	consumeAction = "consume"
+	produceAction  = "produce"
+	consumeAction  = "consume"
 )
 
 var _ api.LogServer = (*grpcServer)(nil)

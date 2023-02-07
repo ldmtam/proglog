@@ -16,11 +16,11 @@ import (
 type Log struct {
 	mu sync.RWMutex
 
-	Dir string
+	Dir    string
 	Config Config
-	
+
 	activeSegment *segment
-	segments []*segment
+	segments      []*segment
 }
 
 func NewLog(dir string, c Config) (*Log, error) {
@@ -32,13 +32,12 @@ func NewLog(dir string, c Config) (*Log, error) {
 	}
 
 	l := &Log{
-		Dir: dir,
+		Dir:    dir,
 		Config: c,
 	}
 
 	return l, l.setup()
 }
-
 
 func (l *Log) Append(record *api.Record) (uint64, error) {
 	l.mu.Lock()
@@ -74,7 +73,7 @@ func (l *Log) Read(off uint64) (*api.Record, error) {
 
 	return s.Read(off)
 }
-  
+
 func (l *Log) Close() error {
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -92,7 +91,7 @@ func (l *Log) Remove() error {
 	if err := l.Close(); err != nil {
 		return err
 	}
-	
+
 	return os.RemoveAll(l.Dir)
 }
 
@@ -129,7 +128,7 @@ func (l *Log) Truncate(lowest uint64) error {
 
 	var segments []*segment
 	for _, s := range l.segments {
-		if s.nextOffset - 1 <= lowest {
+		if s.nextOffset-1 <= lowest {
 			if err := s.Remove(); err != nil {
 				return err
 			}
@@ -149,7 +148,7 @@ func (l *Log) Reader() io.Reader {
 
 	readers := make([]io.Reader, len(l.segments))
 	for i, segment := range l.segments {
-		readers[i] = &originReader{ segment.store, 0 }
+		readers[i] = &originReader{segment.store, 0}
 	}
 
 	return io.MultiReader(readers...)
@@ -196,13 +195,12 @@ func (l *Log) setup() error {
 	return nil
 }
 
-
 func (l *Log) newSegment(off uint64) error {
 	s, err := newSegment(l.Dir, off, l.Config)
 	if err != nil {
 		return err
 	}
-	
+
 	l.segments = append(l.segments, s)
 	l.activeSegment = s
 

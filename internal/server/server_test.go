@@ -20,14 +20,14 @@ func TestServer(t *testing.T) {
 	for scenario, fn := range map[string]func(
 		t *testing.T,
 		rootClient api.LogClient,
-		nobodyClient api.LogClient,	
+		nobodyClient api.LogClient,
 		config *Config,
-	) {
+	){
 		"produce/consume a message to/from the log succeeds": testProduceConsume,
-		"produce/consume stream succeeds": testProduceConsumeStream,
-		"consume past log boundary fails": testConsumePastBoundary,
-		"unauthorized fails": testUnauthorized,
-	}{
+		"produce/consume stream succeeds":                    testProduceConsumeStream,
+		"consume past log boundary fails":                    testConsumePastBoundary,
+		"unauthorized fails":                                 testUnauthorized,
+	} {
 		t.Run(scenario, func(t *testing.T) {
 			rootClient, nobodyClient, config, teardown := setupTest(t, nil)
 			defer teardown()
@@ -44,8 +44,8 @@ func testProduceConsume(t *testing.T, client, _ api.LogClient, config *Config) {
 	}
 
 	produce, err := client.Produce(ctx, &api.ProduceRequest{
-			Record: want,
-		},
+		Record: want,
+	},
 	)
 	require.NoError(t, err)
 
@@ -53,7 +53,7 @@ func testProduceConsume(t *testing.T, client, _ api.LogClient, config *Config) {
 		Offset: produce.Offset,
 	})
 	require.NoError(t, err)
-	
+
 	require.Equal(t, want.Value, consume.Record.Value)
 	require.Equal(t, produce.Offset, consume.Record.Offset)
 }
@@ -87,11 +87,11 @@ func testProduceConsumeStream(t *testing.T, client, _ api.LogClient, config *Con
 
 	records := []*api.Record{
 		{
-			Value: []byte("first message"),
+			Value:  []byte("first message"),
 			Offset: 0,
 		},
 		{
-			Value: []byte("second message"),
+			Value:  []byte("second message"),
 			Offset: 1,
 		},
 	}
@@ -99,18 +99,18 @@ func testProduceConsumeStream(t *testing.T, client, _ api.LogClient, config *Con
 	{
 		stream, err := client.ProduceStream(ctx)
 		require.NoError(t, err)
-	
+
 		for _, record := range records {
 			err = stream.Send(&api.ProduceRequest{
 				Record: record,
 			})
 			require.NoError(t, err)
-	
+
 			res, err := stream.Recv()
 			require.NoError(t, err)
 			if res.Offset != record.Offset {
-				t.Fatalf("got offset: %d, want: %d", 
-					res.Offset, 
+				t.Fatalf("got offset: %d, want: %d",
+					res.Offset,
 					record.Offset,
 				)
 			}
@@ -122,16 +122,16 @@ func testProduceConsumeStream(t *testing.T, client, _ api.LogClient, config *Con
 			Offset: 0,
 		})
 		require.NoError(t, err)
-	
+
 		for _, record := range records {
 			res, err := stream.Recv()
 			require.NoError(t, err)
 			require.Equal(t, res.Record, &api.Record{
-				Value: record.Value,
+				Value:  record.Value,
 				Offset: record.Offset,
 			})
 		}
-	}	
+	}
 }
 
 func testUnauthorized(t *testing.T, _, client api.LogClient, config *Config) {
@@ -182,9 +182,9 @@ func setupTest(t *testing.T, fn func(*Config)) (
 	) {
 		tlsConfig, err := config.SetupTLSConfig(config.TLSConfig{
 			CertFile: crtPath,
-			KeyFile: keyPath,
-			CAFile: config.CAFile,
-			Server: false,
+			KeyFile:  keyPath,
+			CAFile:   config.CAFile,
+			Server:   false,
 		})
 		require.NoError(t, err)
 
@@ -211,11 +211,11 @@ func setupTest(t *testing.T, fn func(*Config)) (
 	)
 
 	serverTLSConfig, err := config.SetupTLSConfig(config.TLSConfig{
-		CertFile: config.ServerCertFile,
-		KeyFile: config.ServerKeyFile,
-		CAFile: config.CAFile,
+		CertFile:      config.ServerCertFile,
+		KeyFile:       config.ServerKeyFile,
+		CAFile:        config.CAFile,
 		ServerAddress: l.Addr().String(),
-		Server: true,
+		Server:        true,
 	})
 	require.NoError(t, err)
 
@@ -237,7 +237,7 @@ func setupTest(t *testing.T, fn func(*Config)) (
 	server, err := NewGRPCServer(cfg, grpc.Creds(serverCreds))
 	require.NoError(t, err)
 
-	go func(){
+	go func() {
 		server.Serve(l)
 	}()
 

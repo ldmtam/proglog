@@ -17,8 +17,8 @@ const (
 
 type store struct {
 	*os.File
-	mu sync.Mutex
-	buf *bufio.Writer
+	mu   sync.Mutex
+	buf  *bufio.Writer
 	size uint64
 }
 
@@ -33,7 +33,7 @@ func newStore(f *os.File) (*store, error) {
 	return &store{
 		File: f,
 		size: size,
-		buf: bufio.NewWriter(f),
+		buf:  bufio.NewWriter(f),
 	}, nil
 }
 
@@ -96,6 +96,6 @@ func (s *store) Close() error {
 	if err := s.buf.Flush(); err != nil {
 		return err
 	}
-	
+
 	return s.File.Close()
 }

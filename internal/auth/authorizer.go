@@ -36,7 +36,7 @@ func (a *Authorizer) Authorize(subject, object, action string) error {
 		)
 
 		st := status.New(codes.PermissionDenied, msg)
-		
+
 		return st.Err()
 	}
 

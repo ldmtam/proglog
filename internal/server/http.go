@@ -8,12 +8,12 @@ import (
 )
 
 func NewHTTPServer(addr string) *http.Server {
-	httpsrv:= newHTTPServer()
+	httpsrv := newHTTPServer()
 	r := mux.NewRouter()
 	r.HandleFunc("/", httpsrv.handleProduce).Methods("POST")
 	r.HandleFunc("/", httpsrv.handleConsume).Methods("GET")
 	return &http.Server{
-		Addr: addr,
+		Addr:    addr,
 		Handler: r,
 	}
 }
@@ -26,7 +26,7 @@ func newHTTPServer() *httpServer {
 	return &httpServer{
 		Log: NewLog(),
 	}
-} 
+}
 
 type ProduceRequest struct {
 	Record Record `json:"record"`
@@ -80,9 +80,9 @@ func (s *httpServer) handleConsume(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+
 	res := ConsumeResponse{Record: record}
-	if err := json.NewEncoder(w).Encode(res); err!= nil {
+	if err := json.NewEncoder(w).Encode(res); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

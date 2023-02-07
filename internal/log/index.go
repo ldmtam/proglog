@@ -10,7 +10,7 @@ import (
 var (
 	offWidth uint64 = 4
 	posWidth uint64 = 8
-	entWidth = offWidth + posWidth
+	entWidth        = offWidth + posWidth
 )
 
 type index struct {
@@ -23,7 +23,7 @@ func newIndex(f *os.File, c Config) (*index, error) {
 	idx := &index{
 		file: f,
 	}
-	
+
 	fi, err := os.Stat(f.Name())
 	if err != nil {
 		return nil, err
@@ -52,18 +52,18 @@ func (i *index) Read(in int64) (out uint32, pos uint64, err error) {
 	}
 
 	if in == -1 {
-		out = uint32((i.size/entWidth)-1)
+		out = uint32((i.size / entWidth) - 1)
 	} else {
 		out = uint32(in)
 	}
 
-	pos = uint64(out)*entWidth
+	pos = uint64(out) * entWidth
 	if i.size < pos+entWidth {
 		return 0, 0, io.EOF
 	}
 
-	out = enc.Uint32(i.mmap[pos:pos+offWidth])
-	pos = enc.Uint64(i.mmap[pos+offWidth:pos+entWidth])
+	out = enc.Uint32(i.mmap[pos : pos+offWidth])
+	pos = enc.Uint64(i.mmap[pos+offWidth : pos+entWidth])
 
 	return out, pos, nil
 }

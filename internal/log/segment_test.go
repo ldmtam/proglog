@@ -11,7 +11,7 @@ import (
 )
 
 func TestSegment(t *testing.T) {
-	dir, _ := ioutil.TempDir("","segment-test")
+	dir, _ := ioutil.TempDir("", "segment-test")
 	defer os.RemoveAll(dir)
 
 	want := &api.Record{Value: []byte("hello world")}
@@ -46,7 +46,7 @@ func TestSegment(t *testing.T) {
 
 	s, err = newSegment(dir, 16, c)
 	require.NoError(t, err)
-	
+
 	// maxed store
 	require.True(t, s.IsMaxed())
 
