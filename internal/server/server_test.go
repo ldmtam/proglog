@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	api "github.com/ldmtam/proglog/api/v1"
+	"github.com/ldmtam/proglog/internal/auth"
 	"github.com/ldmtam/proglog/internal/config"
 	"github.com/ldmtam/proglog/internal/log"
 	"github.com/stretchr/testify/require"
@@ -227,8 +228,10 @@ func setupTest(t *testing.T, fn func(*Config)) (
 	clog, err := log.NewLog(dir, log.Config{})
 	require.NoError(t, err)
 
+	authorizer := auth.New(config.ACLModelFile, config.ACLPolicyFile)
 	cfg = &Config{
-		CommitLog: clog,
+		CommitLog:  clog,
+		Authorizer: authorizer,
 	}
 	if fn != nil {
 		fn(cfg)
